@@ -15,22 +15,14 @@ api = Blueprint('api', __name__)
 # Allow CORS requests to this API
 CORS(api)
 
-
-@api.route('/hello', methods=['POST', 'GET'])
-def handle_hello():
-
-    response_body = {
-        "message": "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
-    }
-
-    return jsonify(response_body), 200
-
 @api.route("/signup", methods=["POST"])
 def signup():
     response_body = {}
     data = request.json
-    user = User(email=data['email'],
+    user = User(username=data['username'],
+                email=data['email'],
                 password=data['password'],
+                avatar_url=data['avatar_url'],
                 is_active=True)
     db.session.add(user)
     db.session.commit()
@@ -38,22 +30,25 @@ def signup():
     return response_body, 200
 
 
-@api.route("/login", methods=["POST"])
-def login():
+@api.route("/signin", methods=["POST"])
+def signin():
     response_body = {}
     email = request.json.get("email", None)
     password = request.json.get("password", None)
     user = db.session.execute(db.select(User).where(User.email == email)).scalar()
     if user and password == user.password:
-        access_token = create_access_token(identity=email)
-        return jsonify(access_token=access_token)
+        access_token = create_access_token(identity=[user.username, user.email, user.avatar_url])
+        response_body['access_token'] = access_token
+        response_body['message'] = "User logged suscesfully!"
+        response_body['results'] = user.serialize()
+        return response_body, 200
     else:
-        response_body['message'] = "Tira pa atras moreno"
+        response_body['message'] = "Error, incorrect email or password"
     return response_body
 
 
-@api.route("/protected", methods=["GET"])
-@jwt_required()
-def protected():
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200
+# @api.route("/protected", methods=["GET"])
+# @jwt_required()
+# def protected():
+#     current_user = get_jwt_identity()
+#     return jsonify(logged_in_as=current_user), 200
