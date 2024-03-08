@@ -6,13 +6,8 @@ import Container from 'react-bootstrap/Container';
 import { useNavigate } from "react-router-dom";
 
 export const Signup = () => {
-    /*
-    username=data['username'],
-    email=data['email'],
-    password=data['password'],
-    avatar_url=data['avatar_url'],
-    is_active=True)
-    */
+    
+    const { store, actions } = useContext(Context)
     const [confirmPassword, setConfirmPassword] = useState('')
     const [formData, setFormData] = useState({
         username: '',
@@ -25,8 +20,6 @@ export const Signup = () => {
         setFormData({ ...formData, [event.target.name]: event.target.value })
     };
 
-    const { store, actions } = useContext(Context)
-
     const navigate = useNavigate();
 
     const handleSubmit = (event) => {
@@ -34,8 +27,9 @@ export const Signup = () => {
         if (confirmPassword === formData.password) {
             actions.signup(formData)
             alert('[PH] Registration Succesful!')
+        } else {
+            alert("Passwords doesn't match")
         }
-
     }
 
     const handleCancel = () => {
@@ -61,7 +55,7 @@ export const Signup = () => {
 
                 <Form.Group className="my-3" controlId="formBasicConfirmPassword">
                     <Form.Label>Confirm Password *</Form.Label>
-                    <Form.Control type="password" placeholder="Confirm Password" name='confirmPassword' value={confirmPassword} onChange={(e) => setConfirmPassword(e)} required />
+                    <Form.Control type="password" placeholder="Confirm Password" name='confirmPassword' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
                 </Form.Group>
 
                 <Form.Group className="my-3" controlId="formBasicImage">

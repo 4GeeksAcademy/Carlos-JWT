@@ -1,58 +1,57 @@
-import React, { useContext, useState } from "react";
-import {Button, Form, Container} from 'react-bootstrap';
-import { Navigate } from "react-router-dom";
+import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Container from 'react-bootstrap/Container';
+import { useNavigate } from "react-router-dom";
 
 export const Signin = () => {
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
-    const {store, actions} = useContext(Context)
+    /*
+    username=data['username'],
+    email=data['email'],
+    password=data['password'],
+    avatar_url=data['avatar_url'],
+    is_active=True)
+    */
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+    })
 
-    const handleClick = async () => {
-        const dataToSend = {
-            email: email,
-            password: password
-        }
-        const url = process.env.backend_url = '/api/signin'
-        const options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(dataToSend)
-        }
+    const handleInputChange = (event) => {
+        setFormData({ ...formData, [event.target.name]: event.target.value })
+    };
 
-        const response = await fetch(url, options);
-        if (!response.ok) {
-            console.error('Error!: ', response.status, response.message)
-            return
-        }
-        const data = await response.json()
-        console.log(data)
+    const { store, actions } = useContext(Context)
+
+    const navigate = useNavigate();
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        actions.signin(formData)
     }
 
-
+    const handleCancel = () => {
+        navigate("/")
+    }
     return (
-        store.isLogin ? <Navigate to="/"/> : 
         <Container className="bg-dark-subtle border rounded-5 p-2 my-5" style={{ maxWidth: '50%' }}>
-            <Form>
+            <Form onSubmit={handleSubmit}>
                 <Form.Group className="my-3" controlId="formBasicEmail">
-                    <Form.Label>Email address</Form.Label>
-                    <Form.Control value={email} onChange={(event) => setEmail(event.target.value)} name="email" type="email" placeholder="Enter email" />
-                    <Form.Text className="text-muted">
-                        We'll never share your email with anyone else.
-                    </Form.Text>
+                    <Form.Label>Email address *</Form.Label>
+                    <Form.Control type="email" placeholder="Enter email" name='email' value={formData.email} onChange={(e) => handleInputChange(e)} required />
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control value={password} onChange={(event) => setPassword(event.target.value)} name="password" type="password" placeholder="Password" />
+                <Form.Group className="my-3" controlId="formBasicPassword">
+                    <Form.Label>Password *</Form.Label>
+                    <Form.Control type="password" placeholder="Password" name='password' value={formData.password} onChange={(e) => handleInputChange(e)} required />
                 </Form.Group>
+
                 <Form.Group className="text-center mt-5">
-                    <Button className="mx-2 px-2" variant="danger" type="reset">
-                        Back
+                    <Button className="mx-2 px-2" variant="danger" type="button" onClick={handleCancel}>
+                        Cancel
                     </Button>
-                    <Button className="mx-2 px-2" onClick={handleClick} variant="success" type="submit">
+                    <Button className="mx-2 px-2" variant="success" type="submit">
                         Login
                     </Button>
                 </Form.Group>
