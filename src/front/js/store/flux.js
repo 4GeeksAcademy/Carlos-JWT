@@ -2,50 +2,91 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			message: null,
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
+			results: null,
+			isLogin: false,
+			showModalSignup: false,
+			showModalSignin: false
 		},
 		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
-
-			getMessage: async () => {
-				try{
-					// fetching data from the backend
-					const resp = await fetch(process.env.BACKEND_URL + "/api/hello")
-					const data = await resp.json()
-					setStore({ message: data.message })
-					// don't forget to return something, that is how the async resolves
-					return data;
-				}catch(error){
-					console.log("Error loading message from backend", error)
+			APICall: async (url, options) => {
+				try {
+					const response = await fetch(url, options);
+					if (!response.ok) {
+						console.error('Error: ' + response.status, response.statusText);
+						return response.status;
+					}
+					return await response.json();
+				} catch (error) {
+					console.error('Error in fetch:', error);
+					return null;
 				}
 			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
 
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
+			signin: async (data) => {
+				const options = {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(data),
+				}
+				const response = await getActions().APICall(process.env.BACKEND_URL + '/api/signin/', options);
+				if (response.access_token != undefined) {
+					getActions().signedIn()
+					localStorage.setItem('access_token', response.access_token)
+				} else console.error('Algo salio mal, no se el que, pero algo', response)
+			},
 
-				//reset the global store
-				setStore({ demo: demo });
+			signup: async (data) => {
+				const options = {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(data),
+				}
+				return await getActions().APICall(process.env.BACKEND_URL + '/api/signup/', options)
+			},
+
+			getProfileUser: async (user) => {
+				const options = {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					}
+				}
+				const response = await getActions().APICall(process.env.BACKEND_URL + '/api/profile/' + user, options)
+				return response.results
+			},
+
+			getUserLoggedIn: async () => {
+				if (localStorage.getItem('access_token')){
+					const options = {
+						method: 'GET',
+						headers: {
+							'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+						}
+					}
+					const response = await getActions().APICall(process.env.BACKEND_URL + '/api/profile/check', options)
+					return response.results
+				} else return 'None'
+			},
+
+			signedIn: () => {
+				setStore({ isLogin: true });
+			},
+
+			signedOut: () => {
+				localStorage.removeItem('access_token')
+				setStore({ isLogin: false });
+			},
+
+			showModalSignin: (value) => {
+				setStore({ showModalSignin: value });
+			},
+
+			showModalSignup: (value) => {
+				setStore({ showModalSignup: value });
 			}
 		}
 	};
