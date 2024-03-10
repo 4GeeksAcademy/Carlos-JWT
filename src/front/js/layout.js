@@ -10,8 +10,6 @@ import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
-import { Signup } from "./pages/Signup";
-import { Signin } from "./pages/Signin";
 import { Profile } from "./pages/Profile";
 import { ProfileEdit } from "./pages/ProfileEdit";
 
@@ -21,7 +19,7 @@ const Layout = () => {
     // you can set the basename on the .env file located at the root of this project, E.g: BASENAME=/react-hello-webapp/
     const basename = process.env.BASENAME || "";
 
-    if(!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL/ >;
+    if (!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL />;
 
     return (
         <div>
@@ -32,11 +30,11 @@ const Layout = () => {
                         <Route element={<Home />} path="/" />
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
-                        <Route element={<h1>Not found!</h1>} />
-                        <Route element={<Signup />} path="/signup" />
-                        <Route element={<Signin />} path="/signin" />
                         <Route element={<Profile />} path="/profile/:username" />
                         <Route element={<ProfileEdit />} path="/profile/:username/edit" />
+                        <Route element={
+                            <img className="rounded mx-auto d-block" src='https://http.cat/404' />
+                        } path='*' />
                     </Routes>
                     <Footer />
                 </ScrollToTop>

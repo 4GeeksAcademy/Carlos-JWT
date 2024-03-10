@@ -1,26 +1,22 @@
 import React, { useContext } from "react";
 import { Context } from "../store/appContext";
-import rigoImageUrl from "../../img/rigo-baby.jpg";
-import "../../styles/home.css";
+import { Container, ListGroup } from "react-bootstrap";
 
 export const Home = () => {
 	const { store, actions } = useContext(Context);
 
 	return (
-		<div className="text-center mt-5">
-			<h1>Hello Rigo!!</h1>
-			<p>
-				<img src={rigoImageUrl} />
+		<Container>
+			<h1 className="text-center">Web terminada</h1>
+			<p style={{ maxWidth: '50%' }}>
+				<h3>Caracteristicas:</h3>
+				<ListGroup>
+					<ListGroup.Item>Signup y Signin (register y login) por medio de Modals</ListGroup.Item>
+					<ListGroup.Item>Pagina de perfiles accesibles a todo el mundo</ListGroup.Item>
+					<ListGroup.Item>Boton de perfil que te lleva al perfil logueado</ListGroup.Item>
+					<ListGroup.Item>Boton para editar perfil siempre que estes logueado y en tu perfil (No edita realmente)</ListGroup.Item>
+				</ListGroup>
 			</p>
-			<div className="alert alert-info">
-				{store.message || "Loading message from the backend (make sure your python backend is running)..."}
-			</div>
-			<p>
-				This boilerplate comes with lots of documentation:{" "}
-				<a href="https://start.4geeksacademy.com/starters/react-flask">
-					Read documentation
-				</a>
-			</p>
-		</div>
+		</Container>
 	);
 };

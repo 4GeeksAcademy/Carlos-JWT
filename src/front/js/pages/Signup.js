@@ -1,12 +1,12 @@
 import React, { useState, useContext } from "react";
-import { Context } from "../store/appContext";
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import Container from 'react-bootstrap/Container';
 import { useNavigate } from "react-router-dom";
+import { Context } from "../store/appContext";
+import { Button, Form, Modal } from 'react-bootstrap';
+
+
 
 export const Signup = () => {
-    
+
     const { store, actions } = useContext(Context)
     const [confirmPassword, setConfirmPassword] = useState('')
     const [formData, setFormData] = useState({
@@ -20,24 +20,24 @@ export const Signup = () => {
         setFormData({ ...formData, [event.target.name]: event.target.value })
     };
 
-    const navigate = useNavigate();
-
     const handleSubmit = (event) => {
         event.preventDefault();
         if (confirmPassword === formData.password) {
             actions.signup(formData)
             alert('[PH] Registration Succesful!')
+            actions.showModalSignup(false)
         } else {
             alert("Passwords doesn't match")
         }
     }
 
     const handleCancel = () => {
-        navigate("/")
+        actions.showModalSignup(false)
     }
+    
     return (
-        <Container className="bg-dark-subtle border rounded-5 p-2 my-5" style={{ maxWidth: '50%' }}>
-            <Form onSubmit={handleSubmit}>
+        <Modal show={store.showModalSignup}>
+            <Form onSubmit={handleSubmit} className="m-3">
                 <Form.Group className="my-3" controlId="formBasicUsername">
                     <Form.Label>Username *</Form.Label>
                     <Form.Control type="text" placeholder="Username" name='username' value={formData.username} onChange={(e) => handleInputChange(e)} required />
@@ -60,7 +60,7 @@ export const Signup = () => {
 
                 <Form.Group className="my-3" controlId="formBasicImage">
                     <Form.Label>Avatar URL</Form.Label>
-                    <Form.Control type="text" placeholder="http://www.url-image.com" name='avatar_url' value={formData.avatar_url} onChange={(e) => setAvatarUrl(e)} />
+                    <Form.Control type="text" placeholder="http://www.url-image.com" name='avatar_url' value={formData.avatar_url} onChange={(e) => handleInputChange(e)} />
                     <Form.Text className="text-muted">
                         Leave blank for placeholder
                     </Form.Text>
@@ -75,6 +75,6 @@ export const Signup = () => {
                     </Button>
                 </Form.Group>
             </Form>
-        </Container>
+        </Modal>
     )
 }

@@ -1,7 +1,24 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { Context } from '../store/appContext'
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Signup } from "../pages/Signup";
+import { Signin } from "../pages/Signin";
 
 export const Navbar = () => {
+	const { store, actions } = useContext(Context)
+	const navigate = useNavigate()	
+
+	const handleProfile = async () => {
+		navigate("/profile/"+await actions.getUserLoggedIn())
+	}
+
+	const handleSignout = async () => {
+		actions.signedOut()
+		navigate("/")
+	}
+
+
+
 	return (
 		<nav className="navbar navbar-light bg-light">
 			<div className="container">
@@ -9,11 +26,21 @@ export const Navbar = () => {
 					<span className="navbar-brand mb-0 h1">React Boilerplate</span>
 				</Link>
 				<div className="ml-auto">
-					<Link to="/demo">
-						<button className="btn btn-primary">Check the Context in action</button>
-					</Link>
+					{store.isLogin ?
+						<button onClick={() => handleProfile()} className="btn mx-2 btn-dark">Profile</button>
+						:
+						<button onClick={() => actions.showModalSignin(true)} className="btn mx-2 btn-primary">Login</button>
+					}
+
+					{store.isLogin ?
+						<button onClick={() => handleSignout()} className="btn mx-2 btn-primary">Logout</button>
+						:
+						<button onClick={() => actions.showModalSignup(true)} className="btn mx-2 btn-primary">Sign up</button>
+					}
 				</div>
 			</div>
+			<Signup />
+			<Signin />
 		</nav>
 	);
 };

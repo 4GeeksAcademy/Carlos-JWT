@@ -1,42 +1,35 @@
 import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import Container from 'react-bootstrap/Container';
+import { Button, Form, Modal }from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 
-export const Signin = () => {
-    /*
-    username=data['username'],
-    email=data['email'],
-    password=data['password'],
-    avatar_url=data['avatar_url'],
-    is_active=True)
-    */
+
+
+export const Signin = ({ show = false }) => {
+
+    const { store, actions } = useContext(Context)
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-    })
+    });
 
     const handleInputChange = (event) => {
         setFormData({ ...formData, [event.target.name]: event.target.value })
     };
 
-    const { store, actions } = useContext(Context)
-
-    const navigate = useNavigate();
-
     const handleSubmit = async (event) => {
         event.preventDefault();
         actions.signin(formData)
+        actions.showModalSignin(false)
     }
 
     const handleCancel = () => {
-        navigate("/")
+        actions.showModalSignin(false)
     }
+
     return (
-        <Container className="bg-dark-subtle border rounded-5 p-2 my-5" style={{ maxWidth: '50%' }}>
-            <Form onSubmit={handleSubmit}>
+        <Modal show={store.showModalSignin}>
+            <Form onSubmit={handleSubmit} className="m-3">
                 <Form.Group className="my-3" controlId="formBasicEmail">
                     <Form.Label>Email address *</Form.Label>
                     <Form.Control type="email" placeholder="Enter email" name='email' value={formData.email} onChange={(e) => handleInputChange(e)} required />
@@ -56,6 +49,6 @@ export const Signin = () => {
                     </Button>
                 </Form.Group>
             </Form>
-        </Container>
+        </Modal>
     )
 }
