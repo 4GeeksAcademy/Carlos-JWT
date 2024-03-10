@@ -1,9 +1,7 @@
-import React, { useContext } from "react";
-import { Context } from "../store/appContext";
+import React from "react";
 import { Container, ListGroup } from "react-bootstrap";
 
 export const Home = () => {
-	const { store, actions } = useContext(Context);
 
 	return (
 		<Container>

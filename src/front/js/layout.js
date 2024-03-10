@@ -4,14 +4,11 @@ import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
 
 import { Home } from "./pages/home";
-import { Demo } from "./pages/demo";
-import { Single } from "./pages/single";
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import { Profile } from "./pages/Profile";
-import { ProfileEdit } from "./pages/ProfileEdit";
 
 //create your first component
 const Layout = () => {
@@ -28,13 +25,8 @@ const Layout = () => {
                     <Navbar />
                     <Routes>
                         <Route element={<Home />} path="/" />
-                        <Route element={<Demo />} path="/demo" />
-                        <Route element={<Single />} path="/single/:theid" />
                         <Route element={<Profile />} path="/profile/:username" />
-                        <Route element={<ProfileEdit />} path="/profile/:username/edit" />
-                        <Route element={
-                            <img className="rounded mx-auto d-block" src='https://http.cat/404' />
-                        } path='*' />
+                        <Route element={<img className="rounded mx-auto d-block" src='https://http.cat/404' />} path='*' />
                     </Routes>
                     <Footer />
                 </ScrollToTop>

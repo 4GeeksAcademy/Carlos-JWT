@@ -1,23 +1,24 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { Context } from '../store/appContext'
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import { Signup } from "../pages/Signup";
-import { Signin } from "../pages/Signin";
+import { Link, useNavigate } from "react-router-dom";
+import { Signup } from "./Signup";
+import { Signin } from "./Signin";
 
 export const Navbar = () => {
 	const { store, actions } = useContext(Context)
+
 	const navigate = useNavigate()	
 
+	// Pide el usuario logeado por el token y lo manda a ese perfil
 	const handleProfile = async () => {
 		navigate("/profile/"+await actions.getUserLoggedIn())
 	}
 
+	// Borra el token y te manda a la raiz
 	const handleSignout = async () => {
 		actions.signedOut()
 		navigate("/")
 	}
-
-
 
 	return (
 		<nav className="navbar navbar-light bg-light">
@@ -39,6 +40,8 @@ export const Navbar = () => {
 					}
 				</div>
 			</div>
+
+			{/* Modals */}
 			<Signup />
 			<Signin />
 		</nav>

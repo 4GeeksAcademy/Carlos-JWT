@@ -12,8 +12,10 @@ from flask_jwt_extended import jwt_required
 
 api = Blueprint('api', __name__)
 
+
 # Allow CORS requests to this API
 CORS(api)
+
 
 @api.route("/signup", methods=["POST"])
 def signup():
@@ -50,8 +52,7 @@ def signin():
 @api.route("/profile/<string:profile>", methods=["GET"])
 def profile_user(profile):
     response_body = {}
-    user = db.session.execute(db.select(User).filter(User.username.ilike(profile))).scalar()
-    print(user)
+    user = db.session.execute(db.select(User).filter(User.username.ilike(profile))).scalar() # Uso del "ilike" para comparar sin tener en cuenta las mayusculas
     if user:
         response_body['message'] = "User found"
         response_body['results'] = user.serialize()
@@ -70,9 +71,3 @@ def profile_check():
     response_body['message'] = f'El usuario es: {current_user[0]}'
     response_body['results'] = current_user[0]
     return response_body, 200
-
-# @api.route("/protected", methods=["GET"])
-# @jwt_required()
-# def protected():
-#     current_user = get_jwt_identity()
-#     return jsonify(logged_in_as=current_user), 200

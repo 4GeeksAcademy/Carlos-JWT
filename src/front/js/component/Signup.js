@@ -3,8 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 import { Button, Form, Modal } from 'react-bootstrap';
 
-
-
 export const Signup = () => {
 
     const { store, actions } = useContext(Context)
